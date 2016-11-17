@@ -5,6 +5,7 @@
  */
 package com.example.controller;
 
+import com.example.multipart.MultipartService;
 import com.example.exceptions.EmptyFieldException;
 import com.example.exceptions.EmptyFileException;
 import org.supercsv.io.CsvBeanReader;
@@ -23,9 +24,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +54,8 @@ public class UserServiceImpl implements UserSerivce {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    MessageSource messageSource;
 
     @Override
     public List<User> getAllService() {
@@ -266,4 +271,32 @@ public class UserServiceImpl implements UserSerivce {
         return true;
 
     }
+
+//    @Override
+//    public void createFtlTemplate(Long id) throws Exception {
+//
+//        Configuration cfg = new Configuration();
+//
+//        // Where do we load the templates from:
+//        cfg.setClassForTemplateLoading(UserServiceImpl.class, "/templates");
+//        cfg.setDefaultEncoding("UTF-8");
+//        cfg.setLocale(Locale.US);
+//        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+//        Map<String, Object> input = new HashMap<String, Object>();
+//        input.put("title", "Crud example");
+//        input.put("user", userRepository.findOne(id));
+//
+//        input.put("messageSource", messageSource);
+//        input.put("local", Locale.ENGLISH);
+//
+//        // http://stackoverflow.com/questions/9605828/email-internationalization-using-velocity-freemarker-templates
+//        Template template = cfg.getTemplate("helloworld.ftl");
+//        Writer consoleWriter = new OutputStreamWriter(System.out);
+//        template.process(input, consoleWriter);
+//
+//        try ( // For the sake of example, also write output into a file:
+//                Writer fileWriter = new FileWriter(new File("D:\\output.html"))) {
+//            template.process(input, fileWriter);
+//        }
+//    }
 }

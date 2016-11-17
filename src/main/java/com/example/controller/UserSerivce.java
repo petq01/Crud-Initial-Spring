@@ -73,4 +73,6 @@ public interface UserSerivce {
 
     public void exportCSV() throws IOException;
 //////    // public List<User> saveUsersService(List<User> users);
+
+//    public void createFtlTemplate(Long id) throws Exception;
 }

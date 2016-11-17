@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.aspect.ValidateUser;
 import com.example.exceptions.EmptyFieldException;
 import com.example.exceptions.EmptyFileException;
 import com.example.model.User;
@@ -38,6 +39,7 @@ public class UserController {
 
     @PreAuthorize(value = "hasAuthority('PERM_READ_USERS')")
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ValidateUser
     public @ResponseBody
     List<User> getAll() {
 
@@ -95,6 +97,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ValidateUser
     public @ResponseBody
     User findOne(@PathVariable(value = "id") Long id) {
 
@@ -184,4 +187,9 @@ public class UserController {
         userService.exportCSV();
     }
 
+//    @RequestMapping(value = "user/{id}/createTemplate", method = RequestMethod.GET)
+//    public @ResponseBody
+//    void createFtlTemplate(@PathVariable(value = "id") Long id) throws Exception {
+//        userService.createFtlTemplate(id);
+//    }
 }

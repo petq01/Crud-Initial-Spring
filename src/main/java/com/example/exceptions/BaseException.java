@@ -7,7 +7,7 @@ package com.example.exceptions;
 
 /**
  *
- * @author User
+ * @author Petya
  */
 public class BaseException extends Exception {
 

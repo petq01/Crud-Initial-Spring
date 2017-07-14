@@ -29,6 +29,8 @@ public interface UserSerivce {
 
     public User findOneService(Long id);
 
+    public void pushFCMNotification(String userDeviceIdKey) throws Exception;
+
     public void deleteUserService(User userPrincipal, Long id) throws Exception;
 
     public User updateUserService(User userPrincipal, User user, Long id) throws EmptyFieldException, Exception;

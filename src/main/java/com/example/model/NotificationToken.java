@@ -6,16 +6,12 @@
 package com.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -23,8 +19,8 @@ import javax.persistence.Table;
  * @author Petya
  */
 @Entity
-@Table(name = "ROLES")
-public class Role implements Serializable {
+@Table(name = "FCM_TOKEN")
+public class NotificationToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,25 +33,26 @@ public class Role implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    @Column(name = "ROLE_NAME")
-    private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @OneToOne
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Permission> permissions;
+    private User user;
 
-    public List<Permission> getPermissions() {
-        return permissions;
+    public User getUser() {
+        return user;
     }
 
-    public void setPermissions(List<Permission> permissions) {
-        this.permissions = permissions;
+    public void setUser(User user) {
+        this.user = user;
+    }
+    @Column(name = "TOKEN_DEVICE")
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

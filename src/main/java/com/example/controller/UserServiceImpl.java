@@ -8,25 +8,38 @@ package com.example.controller;
 import com.example.multipart.MultipartService;
 import com.example.exceptions.EmptyFieldException;
 import com.example.exceptions.EmptyFileException;
+import com.example.model.Role;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import com.example.model.User;
 import com.example.model.UserAttachment;
+import com.example.repository.RoleRepository;
 import com.example.repository.UserAttachmentRepository;
 import com.example.repository.UserRepository;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,16 +59,53 @@ public class UserServiceImpl implements UserSerivce {
     private static final Logger LOG = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    UserAttachmentRepository userAttachmentRepository;
+    private UserAttachmentRepository userAttachmentRepository;
     @Autowired
     private MultipartService multipartService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
+    @Autowired
+    private RoleRepository roleRepository;
+// Method to send Notifications from server to client end.
+
+    public final static String AUTH_KEY_FCM = " AIzaSyBeNf8ggRtGeYc-89ACNZ88rrlTJnYssw4";
+    public final static String API_URL_FCM = "https://fcm.googleapis.com/fcm/send";
+
+// userDeviceIdKey is the device id you will query from your database
+    @Override
+    public void pushFCMNotification(String userDeviceIdKey) throws Exception {
+
+        String authKey = AUTH_KEY_FCM;   // You FCM AUTH key
+        String FMCurl = API_URL_FCM;
+
+        URL url = new URL(FMCurl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setUseCaches(false);
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "key=" + authKey);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        JSONObject json = new JSONObject();
+        json.put("to", userDeviceIdKey.trim());
+        JSONObject info = new JSONObject();
+        info.put("title", "Notificatoin Title");   // Notification title
+        info.put("body", "Hello Test notification"); // Notification body
+        json.put("notification", info);
+
+        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+        wr.write(json.toString());
+        wr.flush();
+        conn.getInputStream();
+    }
 
     @Override
     public List<User> getAllService() {
@@ -210,8 +260,8 @@ public class UserServiceImpl implements UserSerivce {
             String[] header = beanReader.getHeader(true);
             User parsedObject;
             while ((parsedObject = beanReader.read(cl, header)) != null) {
-//                Role role = roleRepository.findByRolename(parsedObject.getRole());
-//                parsedObject.setRole(role);
+                Role role = roleRepository.findByName(parsedObject.getRole().toString());
+                parsedObject.setRole(role);
                 parsedObjects.add(parsedObject);
             }
         } catch (IOException ex) {
@@ -272,31 +322,31 @@ public class UserServiceImpl implements UserSerivce {
 
     }
 
-//    @Override
-//    public void createFtlTemplate(Long id) throws Exception {
-//
-//        Configuration cfg = new Configuration();
-//
-//        // Where do we load the templates from:
-//        cfg.setClassForTemplateLoading(UserServiceImpl.class, "/templates");
-//        cfg.setDefaultEncoding("UTF-8");
-//        cfg.setLocale(Locale.US);
-//        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-//        Map<String, Object> input = new HashMap<String, Object>();
-//        input.put("title", "Crud example");
-//        input.put("user", userRepository.findOne(id));
-//
-//        input.put("messageSource", messageSource);
-//        input.put("local", Locale.ENGLISH);
-//
-//        // http://stackoverflow.com/questions/9605828/email-internationalization-using-velocity-freemarker-templates
-//        Template template = cfg.getTemplate("helloworld.ftl");
-//        Writer consoleWriter = new OutputStreamWriter(System.out);
-//        template.process(input, consoleWriter);
-//
-//        try ( // For the sake of example, also write output into a file:
-//                Writer fileWriter = new FileWriter(new File("D:\\output.html"))) {
-//            template.process(input, fileWriter);
-//        }
-//    }
+    public void createFtlTemplate(Long id) throws Exception {
+
+        Configuration cfg = new Configuration();
+
+        // Where do we load the templates from:
+        cfg.setClassForTemplateLoading(UserServiceImpl.class, "/templates");
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setLocale(Locale.US);
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        Map<String, Object> input = new HashMap<String, Object>();
+        input.put("title", "Crud example");
+        input.put("user", userRepository.findOne(id));
+
+        input.put("messageSource", messageSource);
+        input.put("local", Locale.ENGLISH);
+
+        // http://stackoverflow.com/questions/9605828/email-internationalization-using-velocity-freemarker-templates
+        Template template = cfg.getTemplate("helloworld.ftl");
+        Writer consoleWriter = new OutputStreamWriter(System.out);
+        template.process(input, consoleWriter);
+
+        try ( // For the sake of example, also write output into a file:
+                Writer fileWriter = new FileWriter(new File("D:\\output.html"))) {
+            template.process(input, fileWriter);
+        }
+    }
+
 }

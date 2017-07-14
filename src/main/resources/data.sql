@@ -19,3 +19,6 @@ INSERT INTO ROLES_PERMISSIONS (ROLE_ID, PERMISSIONS_ID) values (3,4)
 INSERT INTO usersdata(id,  firstname, lastname, dob, phonenumber, email,password, ROLE_ID) values(1, 'petq', 'marinova',  '1991','0882660599','userpetq@gmail.com','$2a$08$sS2T1e1JrpsjhGWXpHkrOemtSVLR/W61DF0kd6e0i2.oMYJjL98oa', 1)
 INSERT INTO usersdata(id, firstname, lastname, dob, phonenumber, email,password, ROLE_ID) values(2, 'marina', 'marinova', '1991','0882660599','adminarina@gmail.com','$2a$06$4/boXx7X.TIsAO944aoE3u/dIpECM.YmP9zWSfxGJsE4glZg9WCpu', 2)
 INSERT INTO usersdata(id,  firstname, lastname, dob, phonenumber, email,password, ROLE_ID) values(3,  'alexandra', 'marinova', '1991','0882660599','useralex@gmail.com','$2a$08$sS2T1e1JrpsjhGWXpHkrOemtSVLR/W61DF0kd6e0i2.oMYJjL98oa', 3)
+
+
+INSERT INTO FCM_TOKEN(ID,USER_ID,  TOKEN_DEVICE) values (1,2,  'eaHZSlvcu6o:APA91bEPbekIjnLNjnkxVUujbl6nnTmbbg5-YmDNuHDKaBLg4jZhq4GYZkQ_u8_dL2UYbnzWIFi_JvcA3kuombkRwhsGNVGKl1uqobx5CaEJNKOIE0V8vKTov7r5VIS4_ne5V6fU3MwC')

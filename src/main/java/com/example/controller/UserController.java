@@ -47,6 +47,12 @@ public class UserController {
 
     }
 
+    @RequestMapping(value = "/pushAll", method = RequestMethod.POST)
+    public void pushAll(@RequestParam(value = "userDeviceIdKey") String userDeviceIdKey) throws Exception {
+
+        userService.pushFCMNotification(userDeviceIdKey);
+    }
+
     @RequestMapping(value = "user/findByFirstName/{firstname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<User> searchFirstName(@PathVariable(value = "firstname") String firstName) throws EmptyFieldException {
